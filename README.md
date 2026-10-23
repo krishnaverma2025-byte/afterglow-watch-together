@@ -1,35 +1,92 @@
 # Afterglow — Watch Together
 
-Watch movies together with private party invitations, synchronized playback, and chat.
+Watch a movie with your friends, keep playback in sync, and chat while watching.
 
-**Live site:** https://afterglow-watch-together-kv.amused-gem-5551.chatgpt.site
+**Afterglow is live on Cloudflare Workers.**
 
-## Project layout
+[Open Afterglow](https://afterglow-watch-together-kv.amused-gem-5551.chatgpt.site/) · [Friend’s setup and extension download](https://afterglow-watch-together-kv.amused-gem-5551.chatgpt.site/streaming)
 
-- `public/` and `server.js`: local website and Node.js server.
-- `extension/`: Chrome development extension for streaming services.
-- `live/`: deployed website, Cloudflare Worker API, D1 migrations, and build script.
-- `test/`: automated local API, extension, and provider tests.
-- `safari/`: optional Safari extension sources; packaging requires full Xcode.
-- `docs/`: reverse-engineering observations and implementation notes.
+## Watch with a friend
 
-## Run locally
+### 1. Install Afterglow in Chrome
 
-Requires Node.js 22 or newer. No dependency installation is needed.
+Both you and your friend need the Afterglow extension.
+
+1. Open the [setup page](https://afterglow-watch-together-kv.amused-gem-5551.chatgpt.site/streaming).
+2. Download the extension ZIP and unzip it.
+3. Open `chrome://extensions` in Chrome.
+4. Turn on **Developer mode**.
+5. Click **Load unpacked** and select the unzipped folder containing `manifest.json`.
+6. Pin Afterglow using Chrome’s extensions menu.
+
+The downloaded extension already connects to the live server. You do not need to run a server on your computer.
+
+### 2. Create a party
+
+1. Open a Hotstar movie and start playing it.
+2. Refresh your streaming tab if you had an older Afterglow extension open.
+3. Click the Afterglow extension.
+4. Enter your name and a party name.
+5. Click **Create party** and copy the invitation link.
+6. Send the link privately to your friend.
+
+Create a **new party** for the live server. Old localhost invitations will not work for remote friends.
+
+### 3. Your friend joins
+
+1. Your friend opens the same Hotstar movie using their own streaming access.
+2. They start the movie and click the Afterglow extension.
+3. They enter their name, paste your invitation into **Invitation link**, and click **Join party**.
+
+You can now watch and chat together. The host controls playback by default. Turn off **Only I control playback** to let friends control it too.
+
+## How it works
+
+Each person watches the movie directly from their own streaming account. Afterglow shares play, pause, and movie position updates so everyone stays approximately in sync. It also shares chat messages.
+
+Afterglow does not send the movie from your computer to your friend. Everyone needs access to the same title on the streaming service.
+
+## What has been tested?
+
+- The live server passed checks for creating parties, joining, playback updates, and chat.
+- Hotstar playback and chat worked in two Chrome tabs on one Mac.
+- Watching across two separate devices still needs a full test.
+- Netflix and Prime Video are included as experimental adapters and still need live testing.
+- Playback sync is approximate. Ads, buffering, and background tabs can cause delays.
+
+Parties expire after six hours. Anyone with an invitation can join, so share it privately. Safari installation is not ready; use Chrome.
+
+## Where is it hosted?
+
+The website and backend run together on Cloudflare Workers through Sites hosting. Party information is stored in Cloudflare D1. Your Mac does not need to stay on to keep the website available.
+
+## For developers
+
+Requires Node.js 22 or newer.
 
 ```sh
 npm start
 ```
 
-Open http://localhost:3000. Create a party with the sample video, then open its invitation in another browser or tab. Local rooms are in memory and expire after six hours. Localhost invitations work only on the same computer.
+Open http://localhost:3000. Localhost invitations only work on the same computer. Use the live site to watch with remote friends.
+
+Run checks:
 
 ```sh
 npm test
 ```
 
-## Live version
+| Folder | What it contains |
+| --- | --- |
+| `public/` | Local website |
+| `server.js` | Local backend |
+| `extension/` | Chrome extension source, configured for the live server |
+| `live/` | Hosted website, backend, database setup, and build script |
+| `test/` | Automated checks |
+| `docs/` | Research and implementation details |
+| `safari/` | Optional Safari source; requires Xcode to package |
 
-The deployed version uses a Cloudflare Worker for both static assets and API routes, and D1 for persistent room state. It was published through Sites hosting; its infrastructure is managed by that service and is not attached to a personal Cloudflare dashboard. The checked-in hosting project ID is a resource identifier, not a credential.
+Build the hosted version:
 
 ```sh
 cd live
@@ -37,18 +94,4 @@ node scripts/build.mjs
 node --test test.mjs
 ```
 
-The build generates `live/dist/server/index.js`. Deploying to a separate Cloudflare account requires configuring a Worker, binding a D1 database as `DB`, applying `live/drizzle/0000_rooms.sql`, and publishing the generated Worker.
-
-## Streaming services
-
-Visit the live site's `/streaming` page for the Chrome extension download. Each viewer installs the extension, signs in to the streaming service independently, and opens the same title. A host creates a party and shares the invitation; friends join using the extension. The server distributes playback state and chat. Video streams directly from the provider to each viewer.
-
-The extension in this repository points to the live server. Update its server URLs and host permissions when deploying elsewhere. Local pairing is described in `extension/README.md`.
-
-Hotstar creation, joining, approximate playback synchronization, shared control, and chat were tested in two Chrome tabs on one Mac. Netflix and Prime adapters have controlled tests but have not been validated against signed-in live players. Playback is approximate, with one-second state polling in the hosted version. Two-device verification remains outstanding. Provider changes can require adapter updates.
-
-Private invitation links act as bearer credentials: anyone holding one can join until a room expires or ends. There are no user accounts or invitation revocation controls. This is an MVP.
-
-## Independent implementation
-
-Afterglow is inspired by observed create/invite/join behavior in Teleparty. It does not include Teleparty code, branding, or private service endpoints. See `docs/` for evidence and limitations. The bundled flower sample is an MDN CC0 example: https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4.
+Afterglow is an independent project inspired by Teleparty’s watch-party flow. It does not include Teleparty code or branding. The sample flower video is from [MDN’s CC0 examples](https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4).
