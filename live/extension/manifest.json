@@ -1,8 +1,23 @@
 {
- "manifest_version":3,"name":"Afterglow — Streaming parties","version":"0.2.0",
- "description":"Create and join independent watch parties on Netflix, Prime Video and Hotstar. Each viewer uses their own streaming access.",
- "permissions":["activeTab","scripting","storage"],
- "host_permissions":["http://localhost:3000/*","http://127.0.0.1:3000/*"],
- "background":{"service_worker":"background.js","type":"module"},
- "action":{"default_popup":"popup.html","default_title":"Afterglow party"}
+  "manifest_version": 3,
+  "name": "Afterglow \u2014 Streaming parties",
+  "version": "1.0.1",
+  "description": "Create and join independent watch parties on Netflix, Prime Video and Hotstar. Each viewer uses their own streaming access.",
+  "permissions": [
+    "activeTab",
+    "scripting",
+    "storage"
+  ],
+  "host_permissions": [
+    "http://localhost:3000/*",
+    "http://127.0.0.1:3000/*"
+  ],
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  },
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "Afterglow party"
+  }
 }
