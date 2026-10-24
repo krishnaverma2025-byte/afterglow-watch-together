@@ -217,3 +217,13 @@ Afterglow is an independent implementation inspired by Teleparty’s create/invi
 - [Streaming adapters and test evidence](docs/streaming-investigation.md)
 - [Safari source and packaging notes](safari/README.md)
 - [MDN CC0 sample video](https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4)
+
+## Ownership and permitted use
+
+**Copyright © 2026 Krishna Verma. All rights reserved, except as expressly permitted in the [license](LICENSE).**
+
+Everyone may use the official hosted Afterglow service and install and run the official extension. Limited local copies needed for installation, backup, and private evaluation are permitted.
+
+The source is **proprietary, not open source**. Copying or reusing the code in another project, modifying it, redistributing it, publishing a fork, or operating a separate hosted service requires Krishna Verma’s prior written permission. Developer instructions explain the technology; they do not grant additional licensing permissions.
+
+Third-party and public-domain materials keep their own terms; see [third-party notices](THIRD_PARTY_NOTICES.md). For additional permission, contact [Krishna Verma on GitHub](https://github.com/krishnaverma2025-byte).
